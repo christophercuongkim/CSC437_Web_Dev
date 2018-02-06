@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <title>Tabs Example Page</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 10px;
+    }
+    #block1 {
+      width: 500px;
+    }
+    .tab-block {
+      position: relative;
+      width: 100%;
+      background-color: #EEF;
+      z-index: -2;
+    }
+    .row {
+      clear:both;
+      overflow:hidden;
+    }
+    .back-row {
+      position: relative;
+      left: 2px;
+      top: 8px;
+      z-index:-1
+    }
+    .tab {
+      border: solid 1px;
+      width: 6em;
+      font-size: 125%;
+      float: left;
+  		padding: 4px 8px;
+      background-color: #DDF;
+    }
+    
+    .selected-tab {
+      background-color:#BBF;
+    }
+    
+    .page {
+      display:none;
+      height:300px;
+      border: solid 2px;
+      background-color:#EEE;
+    }
+    .selected-page {
+      display:block;
+    }
+    
+  </style>
+</head>
+<body>
+  <h2>Example Tab Block</h2>
+
+  <div id="block1">
+    <div class="tab-block">  
+      <div class="row back-row">
+        <div class="tab">Tab 1</div>
+        <div class="selected-tab tab">Tab 2</div>
+        <div class="tab">Tab 3</div>		
+      </div>
+      <div class="row">
+        <div class="tab">Tab 4</div>
+        <div class="tab">Tab 5</div>
+        <div class="tab">Tab 6</div>
+      </div>
+
+      <div id="Page1" class="page">Page 1</div>
+      <div id="Page2" class="selected-page page">Page 2</div>
+      <div id="Page3" class="page">Page 3</div>
+      <div id="Page4" class="page">Page 4</div>
+      <div id="Page5" class="page">Page 5</div>
+      <div id="Page6" class="page">Page 6</div>
+    </div>
+  </div>
+</body>
+</html>

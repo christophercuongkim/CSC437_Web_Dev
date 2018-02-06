@@ -1,0 +1,1989 @@
+{
+	"info": {
+		"name": "1 V1 Person Tests",
+		"_postman_id": "9aea4876-1bf3-6b9d-7e67-2a9783690be8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1 Nuke",
+			"description": "",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Cookie Returned\"] = postman.getResponseCookie(\"CHSAuth\")",
+									" !== null && postman.getResponseCookie(\"CHSAuth\").value !== undefined;",
+									"if (tests[\"Cookie Returned\"])",
+									"   postman.setEnvironmentVariable(\"curLogin\",",
+									"    postman.getResponseCookie(\"CHSAuth\").value)"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Nuke",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/DB",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"DB"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2 Registration",
+			"description": "",
+			"item": [
+				{
+					"name": "Register Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var locURL = postman.getResponseHeader(\"Location\").split('/');",
+									"var cookie = postman.getResponseCookie(\"CHSAuth\");",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Cookie Returned\"] = cookie && cookie.value !== undefined;",
+									"",
+									"if (tests[\"Cookie Returned\"]) {",
+									"   postman.setEnvironmentVariable(\"curLogin\", cookie.value)",
+									"   tests[\"Cookie matches session\"] = locURL[locURL.length - 1]",
+									"    === cookie.value;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"userA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register An Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									"",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserB@domainB\",\n    \"firstName\": \"FirstB\",\n    \"lastName\" : \"LastB\",\n    \"password\" : \"passwordB\",\n    \"role\"     : 1,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "Should fail trying to make admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student w/o Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"tests[\"Body matches string\"] = responseBody.has(\"missingField\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/Ssns/{{curLogin}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"{{curLogin}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3 Prs Modification",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Info Without Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 401\"] = responseCode.code === 401;",
+									"",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"1"
+							]
+						},
+						"description": "no login get info\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Code 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Cookie Returned\"] = postman.getResponseCookie(\"CHSAuth\")",
+									" !== null && postman.getResponseCookie(\"CHSAuth\").value !== undefined;",
+									"if (tests[\"Cookie Returned\"])",
+									"   postman.setEnvironmentVariable(\"curLogin\",",
+									"    postman.getResponseCookie(\"CHSAuth\").value)"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"password\" : \"passwordA\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Student Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstAV1\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/{{curLogin}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"{{curLogin}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Cookie Returned\"] = postman.getResponseCookie(\"CHSAuth\")",
+									" !== null && postman.getResponseCookie(\"CHSAuth\").value !== undefined;",
+									"if (tests[\"Cookie Returned\"])",
+									"   postman.setEnvironmentVariable(\"curLogin\",",
+									"    postman.getResponseCookie(\"CHSAuth\").value)"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Check New StudentA Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct Name\"] = jsonData[0].firstName === \"FirstAV1\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Student A Dropped",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"tests[\"Not Found\"] = responseBody.has(\"notFound\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Custom Tests",
+			"description": "",
+			"item": [
+				{
+					"name": "1 Nuke",
+					"description": "",
+					"item": [
+						{
+							"name": "Admin Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Cookie Returned\"] = postman.getResponseCookie(\"CHSAuth\")",
+											" !== null && postman.getResponseCookie(\"CHSAuth\").value !== undefined;",
+											"if (tests[\"Cookie Returned\"])",
+											"   postman.setEnvironmentVariable(\"curLogin\",",
+											"    postman.getResponseCookie(\"CHSAuth\").value)"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+								},
+								"url": {
+									"raw": "{{url}}/Ssns",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Ssns"
+									]
+								},
+								"description": "Good Login\n"
+							},
+							"response": []
+						},
+						{
+							"name": "Nuke",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/javascript"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/DB",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"DB"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "2 Registration",
+					"description": "",
+					"item": [
+						{
+							"name": "2.0 Not logged in",
+							"description": "",
+							"item": [],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "2.1 Student logged in",
+							"description": "",
+							"item": [],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "2.2 Admin logged in",
+							"description": "",
+							"item": [],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Register An Admin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 403\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Body matches string\"] = responseBody === \"\";"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/Prss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss"
+									]
+								},
+								"description": "Should fail trying to make admin"
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Ssns/{{curLogin}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Ssns",
+										"{{curLogin}}"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Login as Student A",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var locURL = postman.getResponseHeader(\"Location\").split('/');",
+											"var cookie = postman.getResponseCookie(\"CHSAuth\");",
+											"",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Cookie Returned\"] = cookie && cookie.value !== undefined;",
+											"",
+											"if (tests[\"Cookie Returned\"]) {",
+											"   postman.setEnvironmentVariable(\"curLogin\", cookie.value)",
+											"   tests[\"Cookie matches session\"] = locURL[locURL.length - 1]",
+											"    === cookie.value;",
+											"}"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/Ssns",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Ssns"
+									]
+								},
+								"description": "Good Login\n"
+							},
+							"response": []
+						},
+						{
+							"name": "Register Student w/o Body",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 400\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Body matches string\"] = responseBody.has(\"missingField\");"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/Prss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss"
+									]
+								},
+								"description": "\n"
+							},
+							"response": []
+						},
+						{
+							"name": "Register Student A",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/Prss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss"
+									]
+								},
+								"description": "\n"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "3 Not Logged in",
+					"description": "",
+					"item": [
+						{
+							"name": "Get Info Without Login copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 401\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Body matches string\"] = responseBody === \"\";"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/Prss/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss",
+										"1"
+									]
+								},
+								"description": "no login get info\n"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "4 Logged in as basic user",
+					"description": "",
+					"item": [],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "5 Logged in as the admin",
+					"description": "",
+					"item": [],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "templates",
+					"description": "",
+					"item": [
+						{
+							"name": "Prss_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "95971b19-97f9-44f2-8b4e-34e7da3b4caf",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin not logged in",
+											"// with email",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"// without valid email",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin logged in",
+											"// with email",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"// without valid email",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//admin",
+											"// with email",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"// without valid email",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Prss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Prss_POST_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "5e56b35a-559e-4a3a-8f7e-21c05ee5a919",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//no Email or last name (all cases)",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin not logged in",
+											"// with nonunique email",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"// with unique email",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//terms accepted",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//terms not accepted",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"// role not student",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"// role is student",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"//non-admin logged in",
+											"// with nonunique email",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"// with unique email",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//terms accepted",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//terms not accepted",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"// role not student",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"// role is student",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"//admin logged in",
+											"// with nonunique email",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"// with unique email",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//terms accepted",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//terms not accepted",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"// role not student",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"// role is student",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Prss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Prss/{prsId}_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6a9f1e3e-e936-4b12-86ae-dc0f44ee22c3",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"",
+											"//non-admin logged in",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"",
+											"//admin logged in",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Prss/2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss",
+										"2"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Prss/{prsId}_PUT_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "17f1a2ea-eb18-4814-a375-b7cb285e06f8",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"",
+											"//empty or null pass",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin not logged in",
+											"//edit other than first, last, pass, role",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"// role changed",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"//no old pass",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin logged in",
+											"//edit other than first, last, pass, role",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"// role changed",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"//no old pass",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"//Not person in question",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin logged in",
+											"//edit other than first, last, pass, role",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"// role changed",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//no old pass",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"//Not person in question",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Prss/2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss",
+										"2"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Prss/{prsId}_DELETE_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6ab12795-b81a-47ec-b290-2dfe2b59603d",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin logged in",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Prss/2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Prss",
+										"2"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Snss_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6ab12795-b81a-47ec-b290-2dfe2b59603d",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin logged in",
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Snss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Snss"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Snss_POST_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "df962cb6-2c62-4bff-90df-ee5ef4a58559",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//badLogin",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin log in",
+											"var locURL = postman.getResponseHeader(\"Location\").split('/');",
+											"var cookie = postman.getResponseCookie(\"CHSAuth\");",
+											"",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Cookie Returned\"] = cookie && cookie.value !== undefined;",
+											"",
+											"if (tests[\"Cookie Returned\"]) {",
+											"   postman.setEnvironmentVariable(\"curLogin\", cookie.value)",
+											"   tests[\"Cookie matches session\"] = locURL[locURL.length - 1]",
+											"    === cookie.value;",
+											"}",
+											"",
+											"//admin log in",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Cookie Returned\"] = postman.getResponseCookie(\"CHSAuth\")",
+											" !== null && postman.getResponseCookie(\"CHSAuth\").value !== undefined;",
+											"if (tests[\"Cookie Returned\"])",
+											"   postman.setEnvironmentVariable(\"curLogin\",",
+											"    postman.getResponseCookie(\"CHSAuth\").value)"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Snss",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Snss"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Snss/{cookie}_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4e7a2ec3-c0d1-462a-b70e-d1237555d72e",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"//not person in question",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Snss/{{curLogin}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Snss",
+										"{{curLogin}}"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Snss/{cookie}_DELETE_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4e7a2ec3-c0d1-462a-b70e-d1237555d72e",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"//not person in question",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Snss/{{curLogin}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Snss",
+										"{{curLogin}}"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "370cf460-1d6a-4ee8-af7f-4b15836e9d7c",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										""
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs_POST_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7606d72d-9c5c-4720-aa45-30f45916d2a3",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//dupTitle",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//title longer than 80 chars",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										""
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs/{cnvId}_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cbfec57a-3b07-411d-8321-189f7c6419ef",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										""
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs/{cnvId}_PUT_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "073b2f80-a7fa-4784-aed3-bdc31db7a13f",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//dupTitle",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"// not owner",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										""
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs/{cnvId}_DELETE_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f157be86-31fa-4cc5-8ca4-55e4340fcb09",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"// not owner",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										""
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs/{cnvId}/Msgs_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f7770116-10ec-4196-822a-cd26c03583d1",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//no params",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/{cnvId}/Msgs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										"{cnvId}",
+										"Msgs"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs/{cnvId}/Msgs_POST_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f7770116-10ec-4196-822a-cd26c03583d1",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//no params",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/{cnvId}/Msgs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										"{cnvId}",
+										"Msgs"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "Cnvs/{cnvId}/Msgs/{msgId}_GET_Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f7770116-10ec-4196-822a-cd26c03583d1",
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200: Success\"] = responseCode.code === 200;",
+											"",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"tests[\"Status code is 401: Unauthorized\"] = responseCode.code === 401;",
+											"",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"tests[\"Status code is 404: Not Found\"] = responseCode.code === 404;",
+											"",
+											"tests[\"Status code is 500: Server Err\"] = responseCode.code === 500;",
+											"",
+											"//no params",
+											"tests[\"Status code is 400: Bad Request\"] = responseCode.code === 400;",
+											"",
+											"//non-admin not logged in",
+											"tests[\"Status code is 403: Forbidden\"] = responseCode.code === 403;",
+											"",
+											"//non-admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"",
+											"//admin",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{url}}/Cnvs/{cnvId}/Msgs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Cnvs",
+										"{cnvId}",
+										"Msgs"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	]
+}

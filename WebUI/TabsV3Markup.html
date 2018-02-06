@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <title>Tabs Example Page</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 10px;
+    }
+    .row {
+      clear:both;
+	  overflow: hidden;
+    }
+	.back-row {
+	   position: relative;
+	   left: 4px;
+	   top: 8px;
+	   z-index: -1;
+	}
+	.page {
+	   display: none;
+	   height:300px;
+       border: solid 2px;
+       background-color:#EEE;
+	}
+	.selected-page {
+	   display: block;
+	}
+    .tab {
+      border: solid 1px;
+      width: 6em;
+      font-size: 125%;
+      float: left;
+  	  padding: 4px 8px;
+      background-color: #DDF;
+    }
+  </style>
+</head>
+<body>
+  <h2>Example Tab Block</h2>
+
+  <div id="block1"> 
+    <div class="row back-row">
+      <div class="tab">Tab 1</div>
+      <div class="tab">Tab 2</div>
+      <div class="tab">Tab 3</div>
+	  <div style="clear:both; min-height:1px;"></div>
+    </div>
+    <div class="row">
+      <div class="tab">Tab 4</div>
+      <div class="tab">Tab 5</div>
+      <div class="tab">Tab 6</div>
+	  <div style="clear:both; min-height:1px;"></div>
+    </div>     
+	<div id="Page1" class="page">Page 1</div>
+    <div id="Page2" class="selected-page page">Page 2</div>
+    <div id="Page3" class="page">Page 3</div>
+    <div id="Page4" class="page">Page 4</div>
+    <div id="Page5" class="page">Page 5</div>
+    <div id="Page6" class="page">Page 6</div>
+  </div>
+</body>
+</html>

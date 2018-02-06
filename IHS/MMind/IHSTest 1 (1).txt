@@ -1,0 +1,7 @@
+F 4 wow
+F 4 -1
+Z 4 1
+F 4 1
+A B A B
+F B A A
+a a b f
